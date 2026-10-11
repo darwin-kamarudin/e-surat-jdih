@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Surat & JDIH</title>
+    <link rel="icon" href="https://img.icons8.com/color/48/000000/document.png">
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS kustom -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans h-screen flex overflow-hidden">
+
+<!-- ========================================== -->
+<!-- 1. PORTAL PUBLIK (JDIH / Dokumen Hukum)    -->
+<!-- ========================================== -->
+<div id="public-portal" class="fixed inset-0 bg-gray-100 z-[50] flex flex-col overflow-y-auto">
+    <header class="bg-blue-900 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-10">
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-balance-scale text-3xl text-blue-300"></i>
+            <div>
+                <h1 class="text-xl font-bold tracking-wide">E-SURAT & JDIH</h1>
+                <p class="text-xs text-blue-200">Sistem Pengarsipan Surat & Dokumen Hukum</p>
+            </div>
+        </div>
+        <button onclick="showLoginScreen()" class="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold text-sm transition-colors shadow-sm border border-blue-500">
+            <i class="fas fa-lock mr-1"></i> Masuk
+        </button>
+    </header>
+
+    <div class="max-w-6xl mx-auto w-full p-4 md:p-6 flex-1 mt-4">
+        <div class="bg-white p-4 md:p-6 rounded-xl shadow-md border border-gray-200">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <h2 class="text-2xl font-bold text-gray-800"><i class="fas fa-book mr-2 text-blue-600"></i> Daftar Peraturan & Dokumen Hukum</h2>
+                <div class="relative w-full md:w-64">
+                    <input type="text" id="search-publik" onkeyup="filterPublik()" placeholder="Cari tentang/nomor..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500 bg-gray-50">
+                    <i class="fas fa-search absolute left-4 top-3 text-gray-400"></i>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[600px]" id="table-publik">
+                    <thead>
+                        <tr class="bg-blue-50 text-blue-800 text-sm uppercase tracking-wider border-y border-blue-100">
+                            <th class="py-3 px-4 font-semibold">Jenis / Kategori</th>
+                            <th class="py-3 px-4 font-semibold">Nomor / Tahun</th>
+                            <th class="py-3 px-4 font-semibold">Tentang</th>
+                            <th class="py-3 px-4 font-semibold text-center">Unduh PDF</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-publik-peraturan" class="text-gray-700">
+                        <!-- Data Publik diisi JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-gray-800 text-gray-400 text-center py-4 text-sm mt-auto">
+        &copy; 2026 - E-ARSIP & JDIH - BY: DARWIN KAMARUDIN
+    </footer>
+</div>
+
+<!-- ========================================== -->
+<!-- 2. LOGIN OVERLAY                           -->
+<!-- ========================================== -->
+<div id="login-screen" class="hidden fixed inset-0 bg-blue-900 bg-opacity-95 flex justify-center items-center z-[100]">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-96 max-w-full m-4 relative">
+        <button onclick="showPublicPortal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"><i class="fas fa-times text-xl"></i></button>
+        <div class="text-center mb-8">
+            <i class="fas fa-user-shield text-5xl text-blue-600 mb-3"></i>
+            <h2 class="text-2xl font-bold text-gray-800">E-Surat & JDIH</h2>
+            <p class="text-sm text-gray-500">Sistem Pengarsipan Surat & Dokumen Hukum</p>
+        </div>
+        <form onsubmit="event.preventDefault(); prosesLogin();" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                <input type="text" id="login-user" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" autocomplete="username" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input type="password" id="login-pass" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 transition duration-300 shadow-md">
+                <i class="fas fa-sign-in-alt mr-2"></i> Masuk Dashboard
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 3. MAIN ADMIN APP (E-Surat & JDIH)         -->
+<!-- ========================================== -->
+
+<!-- Sidebar Responsif -->
+<aside id="admin-sidebar" class="hidden absolute md:relative z-[60] h-full w-64 bg-blue-900 text-white flex-col shadow-xl flex-shrink-0 transition-transform duration-300">
+    <div class="p-6 text-center border-b border-blue-800 relative">
+        <!-- Tombol Tutup Khusus Mobile -->
+        <button onclick="toggleSidebar()" class="md:hidden absolute top-4 right-4 text-blue-300 hover:text-white transition focus:outline-none">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+
+        <i class="fas fa-envelope-open-text text-4xl mb-2 text-blue-300"></i>
+        <h1 class="text-xl font-bold tracking-wider">E-SURAT & JDIH</h1>
+        <p class="text-xs text-blue-300">Sistem Pengarsipan Surat & Dokumen Hukum</p>
+    </div>
+    <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+        <button onclick="nav('dashboard'); if(window.innerWidth < 768) toggleSidebar();" id="nav-dashboard" class="nav-btn w-full flex items-center p-3 rounded-lg text-left hover:bg-blue-800 transition-colors bg-blue-800 text-sm font-medium">
+            <i class="fas fa-chart-pie w-6"></i> Dashboard
+        </button>
+
+        <div class="pt-4 pb-1 text-xs font-semibold text-blue-400 uppercase tracking-wider">Input Surat</div>
+        <button onclick="nav('suratMasuk'); if(window.innerWidth < 768) toggleSidebar();" id="nav-suratMasuk" class="nav-btn w-full flex items-center p-3 rounded-lg text-left hover:bg-blue-800 transition-colors text-sm font-medium">
+            <i class="fas fa-inbox w-6"></i> Catat Surat Masuk
+        </button>
+        <button onclick="nav('suratKeluar'); if(window.innerWidth < 768) toggleSidebar();" id="nav-suratKeluar" class="nav-btn w-full flex items-center p-3 rounded-lg text-left hover:bg-blue-800 transition-colors text-sm font-medium">
+            <i class="fas fa-paper-plane w-6"></i> Catat Surat Keluar
+        </button>
+
+        <div class="pt-4 pb-1 text-xs font-semibold text-blue-400 uppercase tracking-wider">Arsip Surat</div>
+        <button onclick="nav('daftarMasuk'); if(window.innerWidth < 768) toggleSidebar();" id="nav-daftarMasuk" class="nav-btn w-full flex items-center p-3 rounded-lg text-left hover:bg-blue-800 transition-colors text-sm font-medium">
+            <i class="fas fa-file-download w-6"></i> Rekapan Surat Masuk
+        </button>
+        <button onclick="nav('daftarKeluar'); if(window.innerWidth < 768) toggleSidebar();" id="nav-daftarKeluar" class="nav-btn w-full flex items-center p-3 rounded-lg text-left hover:bg-blue-800 transition-colors text-sm font-medium">
+            <i class="fas fa-file-upload w-6"></i> Rekapan Surat Keluar
+        </button>
+
+        <div class="pt-4 pb-1 text-xs font-semibold text-blue-400 uppercase tracking-wider">Dokumen Hukum</div>
+        <button onclick="nav('inputPeraturan'); if(window.innerWidth < 768) toggleSidebar();" id="nav-inputPeraturan" class="nav-btn w-full flex items-center p-3 rounded-lg text-left hover:bg-blue-800 transition-colors text-sm font-medium">
+            <i class="fas fa-plus-circle w-6"></i> Publikasi Peraturan
+        </button>
+        <button onclick="nav('daftarPeraturan'); if(window.innerWidth < 768) toggleSidebar();" id="nav-daftarPeraturan" class="nav-btn w-full flex items-center p-3 rounded-lg text-left hover:bg-blue-800 transition-colors text-sm font-medium">
+            <i class="fas fa-book w-6"></i> Kelola Peraturan
+        </button>
+
+        <!-- Menu Admin (Disembunyikan secara default) -->
+        <div id="menu-admin" class="hidden">
+            <div class="pt-4 pb-1 text-xs font-semibold text-yellow-400 uppercase tracking-wider">Administrator</div>
+            <button onclick="nav('pengguna'); if(window.innerWidth < 768) toggleSidebar();" id="nav-pengguna" class="nav-btn w-full flex items-center p-3 rounded-lg text-left hover:bg-blue-800 transition-colors text-sm font-medium text-yellow-100">
+                <i class="fas fa-users-cog w-6"></i> Kelola Pengguna
+            </button>
+        </div>
+
+        <!-- Tombol Logout -->
+        <div class="pt-6 pb-4 mt-auto border-t border-blue-800 mt-4">
+            <button onclick="logout()" class="w-full flex items-center p-3 rounded-lg text-left bg-red-800 hover:bg-red-700 text-white transition-colors text-sm font-medium shadow-md border border-red-600">
+                <i class="fas fa-sign-out-alt w-6"></i> Logout
+            </button>
+        </div>
+    </nav>
+</aside>
+
+<!-- Main Admin Content -->
+<main id="admin-main" class="hidden flex-1 flex-col h-full bg-gray-50 relative overflow-hidden">
+
+    <!-- Top Bar / Header Admin -->
+    <header class="bg-white shadow-sm border-b px-4 py-3 flex items-center shrink-0 z-10 relative">
+        <button onclick="toggleSidebar()" class="text-blue-800 hover:bg-blue-100 p-2 rounded-md transition mr-3 focus:outline-none" title="Toggle Sidebar">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+        <h2 class="text-lg font-bold text-gray-800">E-SURAT & JDIH</h2>
+    </header>
+
+    <!-- Container Area Konten yang Bisa di Scroll -->
+    <div class="flex-1 overflow-y-auto p-4 md:p-8">
+
+        <!-- Tab: Dashboard -->
+        <section id="tab-dashboard" class="tab-content animate-fade-in block">
+            <h2 class="text-2xl font-bold mb-6 text-gray-700">Dashboard Internal ASN</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Card Masuk -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center space-x-4">
+                    <div class="p-4 bg-green-100 text-green-600 rounded-full">
+                        <i class="fas fa-inbox text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 font-semibold">Total Surat Masuk</p>
+                        <h3 class="text-3xl font-bold text-gray-800" id="stat-masuk">...</h3>
+                    </div>
+                </div>
+                <!-- Card Keluar -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center space-x-4">
+                    <div class="p-4 bg-blue-100 text-blue-600 rounded-full">
+                        <i class="fas fa-paper-plane text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 font-semibold">Total Surat Keluar</p>
+                        <h3 class="text-3xl font-bold text-gray-800" id="stat-keluar">...</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Input Surat Masuk -->
+        <section id="tab-suratMasuk" class="tab-content animate-fade-in hidden max-w-2xl mx-auto">
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100 border-t-4 border-t-green-500">
+                <h2 class="text-2xl font-bold mb-6 text-gray-700"><i class="fas fa-inbox mr-2 text-green-500"></i> Registrasi Surat Masuk</h2>
+                <form id="formMasuk" onsubmit="event.preventDefault(); submitSuratMasuk();" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Asal Surat (Pengirim)</label>
+                            <input type="text" id="sm-asal" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Surat (dari Pengirim)</label>
+                            <input type="text" id="sm-no" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Perihal</label>
+                        <textarea id="sm-perihal" rows="2" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" required></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Rencana Disposisi Ke</label>
+                            <input type="text" id="sm-disposisi" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Link Dokumen (Opsional)</label>
+                            <input type="url" id="sm-link" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                        </div>
+                    </div>
+                    <div class="upload-field">
+                        <label class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-cloud-upload-alt mr-1 text-green-500"></i> Unggah File ke Google Drive <span class="text-gray-400 font-normal">(PDF/Word/Excel/gambar, maks. 10 MB)</span></label>
+                        <input type="file" id="sm-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" class="hidden">
+                        <label for="sm-file" class="upload-drop border-2 border-dashed border-green-300 bg-green-50 hover:bg-green-100 rounded-lg p-4 flex flex-col items-center text-center cursor-pointer transition">
+                            <span class="inline-flex items-center px-5 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-md shadow-sm"><i class="fas fa-upload mr-2"></i> Pilih File</span>
+                            <span class="text-xs text-gray-500 mt-2">atau seret &amp; lepas file ke sini</span>
+                        </label>
+                        <div class="upload-chosen hidden items-center gap-3 border border-green-200 bg-green-50 rounded-lg p-3">
+                            <i class="fas fa-file-alt text-2xl text-green-600"></i>
+                            <div class="flex-1 min-w-0">
+                                <p class="upload-name truncate text-sm font-semibold text-gray-800"></p>
+                                <p class="upload-size text-xs text-gray-500"></p>
+                            </div>
+                            <button type="button" class="upload-remove text-gray-400 hover:text-red-500 p-1" title="Batalkan pilihan"><i class="fas fa-times"></i></button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Jika file dipilih, link di atas akan diisi otomatis dengan link file di Drive.</p>
+                    </div>
+                    <button type="submit" class="w-full mt-4 bg-green-600 text-white font-bold py-3 px-4 rounded-md hover:bg-green-700 transition duration-300"><i class="fas fa-save mr-2"></i> Simpan Surat Masuk</button>
+                </form>
+                <div id="msg-masuk" class="mt-4 text-center text-sm font-medium"></div>
+            </div>
+        </section>
+
+        <!-- Tab: Input Surat Keluar -->
+        <section id="tab-suratKeluar" class="tab-content animate-fade-in hidden max-w-2xl mx-auto">
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100 border-t-4 border-t-blue-500">
+                <h2 class="text-2xl font-bold mb-6 text-gray-700"><i class="fas fa-paper-plane mr-2 text-blue-500"></i> Registrasi Surat Keluar</h2>
+                <form id="formKeluar" onsubmit="event.preventDefault(); submitSuratKeluar();" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Surat Keluar</label>
+                            <input type="text" id="sk-no" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tujuan Surat</label>
+                            <input type="text" id="sk-tujuan" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Perihal</label>
+                        <textarea id="sk-perihal" rows="2" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Penandatangan</label>
+                            <input type="text" id="sk-ttd" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Link Draft (Opsional)</label>
+                            <input type="url" id="sk-link" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="upload-field">
+                        <label class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-cloud-upload-alt mr-1 text-blue-500"></i> Unggah File ke Google Drive <span class="text-gray-400 font-normal">(PDF/Word/Excel/gambar, maks. 10 MB)</span></label>
+                        <input type="file" id="sk-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" class="hidden">
+                        <label for="sk-file" class="upload-drop border-2 border-dashed border-blue-300 bg-blue-50 hover:bg-blue-100 rounded-lg p-4 flex flex-col items-center text-center cursor-pointer transition">
+                            <span class="inline-flex items-center px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-md shadow-sm"><i class="fas fa-upload mr-2"></i> Pilih File</span>
+                            <span class="text-xs text-gray-500 mt-2">atau seret &amp; lepas file ke sini</span>
+                        </label>
+                        <div class="upload-chosen hidden items-center gap-3 border border-blue-200 bg-blue-50 rounded-lg p-3">
+                            <i class="fas fa-file-alt text-2xl text-blue-600"></i>
+                            <div class="flex-1 min-w-0">
+                                <p class="upload-name truncate text-sm font-semibold text-gray-800"></p>
+                                <p class="upload-size text-xs text-gray-500"></p>
+                            </div>
+                            <button type="button" class="upload-remove text-gray-400 hover:text-red-500 p-1" title="Batalkan pilihan"><i class="fas fa-times"></i></button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Jika file dipilih, link di atas akan diisi otomatis dengan link file di Drive.</p>
+                    </div>
+                    <button type="submit" class="w-full mt-4 bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 transition duration-300"><i class="fas fa-save mr-2"></i> Simpan Surat Keluar</button>
+                </form>
+                <div id="msg-keluar" class="mt-4 text-center text-sm font-medium"></div>
+            </div>
+        </section>
+
+        <!-- Tab: Daftar Surat Masuk -->
+        <section id="tab-daftarMasuk" class="tab-content animate-fade-in hidden">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full flex flex-col">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                    <h2 class="text-2xl font-bold text-gray-700"><i class="fas fa-file-download mr-2 text-green-500"></i> Rekapan Surat Masuk</h2>
+                    <button onclick="cetakTabel('table-masuk', 'Daftar Rekapan Surat Masuk')" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-300 shadow-sm text-sm font-bold w-full md:w-auto"><i class="fas fa-print mr-1"></i> Cetak Tabel</button>
+                </div>
+                <div class="overflow-x-auto flex-1">
+                    <table id="table-masuk" class="w-full text-left border-collapse min-w-[800px]">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-600 text-sm uppercase tracking-wider">
+                                <th class="py-3 px-4 font-semibold border-b">ID / No. Agenda</th>
+                                <th class="py-3 px-4 font-semibold border-b">Tgl Terima</th>
+                                <th class="py-3 px-4 font-semibold border-b">No. Surat Pengirim</th>
+                                <th class="py-3 px-4 font-semibold border-b">Asal & Perihal</th>
+                                <th class="py-3 px-4 font-semibold border-b">Disposisi</th>
+                                <th class="py-3 px-4 font-semibold border-b text-center">Arsip</th>
+                                <th class="py-3 px-4 font-semibold border-b text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-masuk" class="text-gray-700"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Daftar Surat Keluar -->
+        <section id="tab-daftarKeluar" class="tab-content animate-fade-in hidden">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full flex flex-col">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                    <h2 class="text-2xl font-bold text-gray-700"><i class="fas fa-file-upload mr-2 text-blue-500"></i> Rekapan Surat Keluar</h2>
+                    <button onclick="cetakTabel('table-keluar', 'Daftar Rekapan Surat Keluar')" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-300 shadow-sm text-sm font-bold w-full md:w-auto"><i class="fas fa-print mr-1"></i> Cetak Tabel</button>
+                </div>
+                <div class="overflow-x-auto flex-1">
+                    <table id="table-keluar" class="w-full text-left border-collapse min-w-[800px]">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-600 text-sm uppercase tracking-wider">
+                                <th class="py-3 px-4 font-semibold border-b">Tgl Surat</th>
+                                <th class="py-3 px-4 font-semibold border-b">Nomor Surat Keluar</th>
+                                <th class="py-3 px-4 font-semibold border-b">Tujuan</th>
+                                <th class="py-3 px-4 font-semibold border-b">Perihal</th>
+                                <th class="py-3 px-4 font-semibold border-b">TTD</th>
+                                <th class="py-3 px-4 font-semibold border-b text-center">Draft</th>
+                                <th class="py-3 px-4 font-semibold border-b text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-keluar" class="text-gray-700"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Input Publikasi Peraturan -->
+        <section id="tab-inputPeraturan" class="tab-content animate-fade-in hidden max-w-2xl mx-auto">
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100 border-t-4 border-t-purple-500">
+                <h2 class="text-2xl font-bold mb-6 text-gray-700"><i class="fas fa-gavel mr-2 text-purple-500"></i> Publikasi Dokumen Hukum</h2>
+                <p class="text-sm text-gray-500 mb-6">Dokumen yang diinput di sini akan tampil di Portal Publik JDIH.</p>
+
+                <form id="formPeraturan" onsubmit="event.preventDefault(); submitPeraturan();" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Kategori / Jenis</label>
+                            <select id="prt-kategori" class="form-input w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-purple-500">
+                                <option value="Peraturan Daerah">Peraturan Daerah (Perda)</option>
+                                <option value="Peraturan Bupati/Walikota">Peraturan Bupati/Walikota</option>
+                                <option value="Peraturan Menteri">Peraturan Menteri</option>
+                                <option value="Surat Edaran">Surat Edaran</option>
+                            </select>
+                        </div>
+                        <div class="flex space-x-2">
+                            <div class="w-1/2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nomor</label>
+                                <input type="text" id="prt-no" class="form-input w-full p-2 border border-gray-300 rounded-md" required>
+                            </div>
+                            <div class="w-1/2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
+                                <input type="number" id="prt-tahun" class="form-input w-full p-2 border border-gray-300 rounded-md" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tentang (Judul Peraturan)</label>
+                        <textarea id="prt-tentang" rows="3" class="form-input w-full p-2 border border-gray-300 rounded-md" required></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Link Dokumen PDF <span class="text-gray-400 font-normal">(isi link, atau unggah file di bawah)</span></label>
+                        <input type="url" id="prt-link" class="form-input w-full p-2 border border-gray-300 rounded-md">
+                    </div>
+                    <div class="upload-field">
+                        <label class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-cloud-upload-alt mr-1 text-purple-500"></i> Unggah File ke Google Drive <span class="text-gray-400 font-normal">(PDF, maks. 10 MB)</span></label>
+                        <input type="file" id="prt-file" accept=".pdf" class="hidden">
+                        <label for="prt-file" class="upload-drop border-2 border-dashed border-purple-300 bg-purple-50 hover:bg-purple-100 rounded-lg p-4 flex flex-col items-center text-center cursor-pointer transition">
+                            <span class="inline-flex items-center px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold rounded-md shadow-sm"><i class="fas fa-upload mr-2"></i> Pilih File</span>
+                            <span class="text-xs text-gray-500 mt-2">atau seret &amp; lepas file ke sini</span>
+                        </label>
+                        <div class="upload-chosen hidden items-center gap-3 border border-purple-200 bg-purple-50 rounded-lg p-3">
+                            <i class="fas fa-file-alt text-2xl text-purple-600"></i>
+                            <div class="flex-1 min-w-0">
+                                <p class="upload-name truncate text-sm font-semibold text-gray-800"></p>
+                                <p class="upload-size text-xs text-gray-500"></p>
+                            </div>
+                            <button type="button" class="upload-remove text-gray-400 hover:text-red-500 p-1" title="Batalkan pilihan"><i class="fas fa-times"></i></button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Disimpan di folder JDIH dan bisa diakses publik lewat link.</p>
+                    </div>
+                    <button type="submit" class="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-md hover:bg-purple-700 transition duration-300 mt-2">
+                        <i class="fas fa-globe mr-1"></i> Publikasikan ke Portal
+                    </button>
+                </form>
+                <div id="msg-peraturan" class="mt-4 text-center text-sm font-medium"></div>
+            </div>
+        </section>
+
+        <!-- Tab: Daftar Kelola Peraturan -->
+        <section id="tab-daftarPeraturan" class="tab-content animate-fade-in hidden">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full flex flex-col">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                    <h2 class="text-2xl font-bold text-gray-700"><i class="fas fa-book mr-2 text-purple-500"></i> Kelola Peraturan (Admin)</h2>
+                    <button onclick="cetakTabel('table-aturan', 'Daftar Peraturan & Dokumen Hukum')" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-300 shadow-sm text-sm font-bold w-full md:w-auto"><i class="fas fa-print mr-1"></i> Cetak Tabel</button>
+                </div>
+                <div class="overflow-x-auto flex-1">
+                    <table id="table-aturan" class="w-full text-left border-collapse min-w-[700px]">
+                        <thead>
+                            <tr class="bg-purple-50 text-purple-800 text-sm uppercase tracking-wider">
+                                <th class="py-3 px-4 font-semibold border-b">Kategori</th>
+                                <th class="py-3 px-4 font-semibold border-b">No/Thn</th>
+                                <th class="py-3 px-4 font-semibold border-b">Tentang</th>
+                                <th class="py-3 px-4 font-semibold border-b text-center">PDF</th>
+                                <th class="py-3 px-4 font-semibold border-b text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-peraturan" class="text-gray-700"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Kelola Pengguna (Khusus Admin) -->
+        <section id="tab-pengguna" class="tab-content animate-fade-in hidden">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-full flex flex-col">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border-b pb-4 gap-4">
+                    <h2 class="text-2xl font-bold text-gray-700"><i class="fas fa-users-cog mr-2 text-yellow-500"></i> Kelola Pengguna Sistem</h2>
+                    <button onclick="openModalTambahUser()" class="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition duration-300 shadow-sm text-sm font-bold w-full md:w-auto"><i class="fas fa-user-plus mr-1"></i> Tambah User Baru</button>
+                </div>
+                <div class="overflow-x-auto flex-1">
+                    <table class="w-full text-left border-collapse min-w-[500px]">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-600 text-sm uppercase tracking-wider">
+                                <th class="py-3 px-4 font-semibold border-b">Username</th>
+                                <th class="py-3 px-4 font-semibold border-b">Nama Lengkap</th>
+                                <th class="py-3 px-4 font-semibold border-b text-center">Role</th>
+                                <th class="py-3 px-4 font-semibold border-b text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-pengguna" class="text-gray-700"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </div> <!-- Tutup Container Area Konten -->
+</main>
+
+
+<!-- ========================================== -->
+<!-- MODALS & OVERLAYS                          -->
+<!-- ========================================== -->
+
+<!-- Overlay Loading Global -->
+<div id="loading-overlay" class="hidden fixed inset-0 bg-gray-900 bg-opacity-70 flex justify-center items-center z-[200]">
+    <div class="bg-white p-6 rounded-xl shadow-2xl flex flex-col items-center">
+        <div class="loader border-4 border-blue-500 border-t-transparent rounded-full w-12 h-12 mb-4 animate-spin"></div>
+        <p class="text-gray-800 font-bold" id="loading-text">Memproses...</p>
+    </div>
+</div>
+
+<!-- Edit Surat Modal -->
+<div id="edit-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 p-4">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center border-b pb-2 mb-4">
+            <h3 class="text-xl font-bold text-gray-800" id="edit-modal-title">Edit Surat</h3>
+            <button onclick="closeEditModal()" class="text-gray-400 hover:text-red-500 focus:outline-none"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="formEdit" onsubmit="event.preventDefault(); submitEditData();" class="space-y-4">
+            <input type="hidden" id="edit-jenis">
+            <input type="hidden" id="edit-rowId">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Surat</label>
+                <input type="text" id="edit-no" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Perihal</label>
+                <textarea id="edit-perihal" rows="3" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500" required></textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">URL Link Dokumen</label>
+                <input type="url" id="edit-link" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500">
+            </div>
+            <div class="upload-field">
+                        <label class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-cloud-upload-alt mr-1 text-blue-500"></i> Unggah File ke Google Drive <span class="text-gray-400 font-normal">(opsional, mengganti link)</span></label>
+                        <input type="file" id="edit-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" class="hidden">
+                        <label for="edit-file" class="upload-drop border-2 border-dashed border-blue-300 bg-blue-50 hover:bg-blue-100 rounded-lg p-4 flex flex-col items-center text-center cursor-pointer transition">
+                            <span class="inline-flex items-center px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-md shadow-sm"><i class="fas fa-upload mr-2"></i> Pilih File</span>
+                            <span class="text-xs text-gray-500 mt-2">atau seret &amp; lepas file ke sini</span>
+                        </label>
+                        <div class="upload-chosen hidden items-center gap-3 border border-blue-200 bg-blue-50 rounded-lg p-3">
+                            <i class="fas fa-file-alt text-2xl text-blue-600"></i>
+                            <div class="flex-1 min-w-0">
+                                <p class="upload-name truncate text-sm font-semibold text-gray-800"></p>
+                                <p class="upload-size text-xs text-gray-500"></p>
+                            </div>
+                            <button type="button" class="upload-remove text-gray-400 hover:text-red-500 p-1" title="Batalkan pilihan"><i class="fas fa-times"></i></button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti dokumen.</p>
+                    </div>
+            <div class="flex justify-end space-x-2 mt-4 pt-4 border-t">
+                <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Batal</button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"><i class="fas fa-save mr-1"></i> Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Peraturan Modal -->
+<div id="edit-peraturan-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 p-4">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg overflow-y-auto max-h-[90vh]">
+        <div class="flex justify-between items-center border-b pb-2 mb-4">
+            <h3 class="text-xl font-bold text-gray-800"><i class="fas fa-edit text-purple-500 mr-2"></i>Edit Peraturan</h3>
+            <button onclick="closeEditPeraturanModal()" class="text-gray-400 hover:text-red-500 focus:outline-none"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="formEditPeraturan" onsubmit="event.preventDefault(); submitEditPeraturanData();" class="space-y-4">
+            <input type="hidden" id="edit-prt-rowId">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kategori / Jenis</label>
+                    <select id="edit-prt-kategori" class="form-input w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-purple-500">
+                        <option value="Peraturan Daerah">Peraturan Daerah (Perda)</option>
+                        <option value="Peraturan Bupati/Walikota">Peraturan Bupati/Walikota</option>
+                        <option value="Peraturan Menteri">Peraturan Menteri</option>
+                        <option value="Surat Edaran">Surat Edaran</option>
+                    </select>
+                </div>
+                <div class="flex space-x-2">
+                    <div class="w-1/2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nomor</label>
+                        <input type="text" id="edit-prt-no" class="form-input w-full p-2 border border-gray-300 rounded-md" required>
+                    </div>
+                    <div class="w-1/2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
+                        <input type="number" id="edit-prt-tahun" class="form-input w-full p-2 border border-gray-300 rounded-md" required>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tentang (Judul Peraturan)</label>
+                <textarea id="edit-prt-tentang" rows="3" class="form-input w-full p-2 border border-gray-300 rounded-md" required></textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Link Dokumen PDF</label>
+                <input type="url" id="edit-prt-link" class="form-input w-full p-2 border border-gray-300 rounded-md">
+            </div>
+            <div class="upload-field">
+                        <label class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-cloud-upload-alt mr-1 text-purple-500"></i> Unggah File ke Google Drive <span class="text-gray-400 font-normal">(opsional, mengganti link)</span></label>
+                        <input type="file" id="edit-prt-file" accept=".pdf" class="hidden">
+                        <label for="edit-prt-file" class="upload-drop border-2 border-dashed border-purple-300 bg-purple-50 hover:bg-purple-100 rounded-lg p-4 flex flex-col items-center text-center cursor-pointer transition">
+                            <span class="inline-flex items-center px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold rounded-md shadow-sm"><i class="fas fa-upload mr-2"></i> Pilih File</span>
+                            <span class="text-xs text-gray-500 mt-2">atau seret &amp; lepas file ke sini</span>
+                        </label>
+                        <div class="upload-chosen hidden items-center gap-3 border border-purple-200 bg-purple-50 rounded-lg p-3">
+                            <i class="fas fa-file-alt text-2xl text-purple-600"></i>
+                            <div class="flex-1 min-w-0">
+                                <p class="upload-name truncate text-sm font-semibold text-gray-800"></p>
+                                <p class="upload-size text-xs text-gray-500"></p>
+                            </div>
+                            <button type="button" class="upload-remove text-gray-400 hover:text-red-500 p-1" title="Batalkan pilihan"><i class="fas fa-times"></i></button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti dokumen.</p>
+                    </div>
+            <div class="flex justify-end space-x-2 mt-4 pt-4 border-t">
+                <button type="button" onclick="closeEditPeraturanModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Batal</button>
+                <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"><i class="fas fa-save mr-1"></i> Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Tambah Pengguna Baru -->
+<div id="modal-tambah-user" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 p-4">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+        <div class="flex justify-between items-center border-b pb-2 mb-4">
+            <h3 class="text-xl font-bold text-gray-800"><i class="fas fa-user-plus text-yellow-500 mr-2"></i>Tambah User</h3>
+            <button onclick="closeModalUser()" class="text-gray-400 hover:text-red-500 focus:outline-none"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="formTambahUser" onsubmit="event.preventDefault(); submitTambahUser();" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Username (ID Login)</label>
+                <input type="text" id="add-username" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-yellow-500" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                <input type="text" id="add-nama" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-yellow-500" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Role (Peran)</label>
+                <select id="add-role" class="form-input w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-yellow-500">
+                    <option value="Staff">Staff (Input Surat & Peraturan)</option>
+                    <option value="Admin">Admin (Bisa kelola User & Sistem)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Password Awal</label>
+                <input type="password" id="add-password" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-yellow-500" required minlength="5">
+            </div>
+            <div class="flex justify-end space-x-2 mt-4 pt-4 border-t">
+                <button type="button" onclick="closeModalUser()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Batal</button>
+                <button type="submit" class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 font-bold">Simpan Akun</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Ubah Password -->
+<div id="modal-ubah-password" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 p-4">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+        <div class="flex justify-between items-center border-b pb-2 mb-4">
+            <h3 class="text-xl font-bold text-gray-800">Reset/Ubah Password</h3>
+            <button onclick="closeModalPassword()" class="text-gray-400 hover:text-red-500 focus:outline-none"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="formUbahPassword" onsubmit="event.preventDefault(); submitUbahPassword();" class="space-y-4">
+            <input type="hidden" id="pass-username">
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-2">
+                <p class="text-sm text-gray-600">Akun: <span id="pass-username-display" class="font-bold text-gray-800"></span></p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Password Baru</label>
+                <input type="text" id="pass-new" class="form-input w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500" placeholder="Ketik sandi baru..." required minlength="5">
+            </div>
+            <div class="flex justify-end space-x-2 mt-4 pt-4 border-t">
+                <button type="button" onclick="closeModalPassword()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Batal</button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"><i class="fas fa-key mr-1"></i> Perbarui Password</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+    <!-- Dialog Kustom (pengganti alert/confirm) -->
+    <div id="dlg-overlay" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center z-[300] p-4" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+        <div id="dlg-box" class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+            <div id="dlg-bar" class="h-1.5 bg-blue-500"></div>
+            <div class="p-6 text-center">
+                <div id="dlg-icon-wrap" class="dlg-icon-ring mx-auto mb-4 w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+                    <i id="dlg-icon" class="fas fa-info-circle text-3xl text-blue-600"></i>
+                </div>
+                <h3 id="dlg-title" class="text-lg font-bold text-gray-800"></h3>
+                <p id="dlg-message" class="text-sm text-gray-600 mt-2 whitespace-pre-line break-words"></p>
+            </div>
+            <div id="dlg-actions" class="px-6 pb-6 flex gap-3 justify-center">
+                <button type="button" id="dlg-cancel" class="dlg-btn hidden flex-1 px-4 py-2.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm"></button>
+                <button type="button" id="dlg-ok" class="dlg-btn flex-1 px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay Progress Upload -->
+    <div id="upload-overlay" class="hidden fixed inset-0 bg-gray-900 bg-opacity-70 flex justify-center items-center z-[210] p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 text-center">
+            <div id="upload-icon" class="mx-auto mb-3 w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center">
+                <i id="upload-icon-i" class="fas fa-cloud-upload-alt text-3xl text-blue-600 upload-bounce"></i>
+            </div>
+            <h3 id="upload-title" class="font-bold text-gray-800">Mengunggah dokumen...</h3>
+            <p id="upload-filename" class="text-xs text-gray-500 truncate mt-1"></p>
+
+            <div class="mt-4 w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div id="upload-bar" class="upload-bar h-3 rounded-full bg-blue-600" style="width:0%"></div>
+            </div>
+            <div class="flex justify-between text-xs mt-1">
+                <span id="upload-stage" class="text-gray-500">Menyiapkan...</span>
+                <span id="upload-percent" class="font-bold text-gray-700">0%</span>
+            </div>
+
+            <div class="flex justify-between mt-5 text-[11px] text-gray-400">
+                <div class="upload-step" data-step="1"><span class="ustep-dot"></span>Membaca</div>
+                <div class="upload-step" data-step="2"><span class="ustep-dot"></span>Mengunggah</div>
+                <div class="upload-step" data-step="3"><span class="ustep-dot"></span>Ke Drive</div>
+                <div class="upload-step" data-step="4"><span class="ustep-dot"></span>Selesai</div>
+            </div>
+            <p class="text-[11px] text-gray-400 mt-4">Mohon tunggu, jangan tutup halaman ini.</p>
+        </div>
+    </div>
+
+    <!-- Konfigurasi & logika aplikasi -->
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
