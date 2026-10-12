@@ -448,7 +448,7 @@ async function loadPeraturanPublik() {
         tbody.innerHTML = data.map((row) => {
             const url = safeUrl(row.linkPdf);
             const linkHTML = url
-                ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-full text-xs font-bold transition-colors inline-block"><i class="fas fa-file-pdf mr-1"></i> Buka PDF</a>`
+                ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-full text-xs font-bold transition-colors inline-block"><i class="fas fa-file-pdf mr-1"></i> Lihat</a>`
                 : '-';
             return `
                 <tr class="border-b hover:bg-blue-50 text-sm public-row">
