@@ -26,16 +26,16 @@
                     <span class="brand-mark"><i class="fas fa-landmark"></i></span>
                     <div class="min-w-0">
                         <div class="font-bold leading-tight">Arsip Surat &amp; JDIH</div>
-                        <div class="text-xs text-blue-200 truncate">Kabupaten Pulau Taliabu</div>
+                        <div id="pub-instansi" class="text-xs text-blue-200 truncate">Badan Pengelolaan Keuangan dan Aset Daerah</div>
                     </div>
                 </div>
-                <button onclick="showLoginScreen()" class="btn btn-sm shrink-0" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.28)">
-                    <i class="fas fa-lock"></i> Masuk petugas
+                <button onclick="showLoginScreen()" class="btn btn-sm shrink-0 btn-hero-ghost">
+                    <i class="fas fa-lock"></i> Login
                 </button>
             </div>
 
-            <h1 class="font-display text-3xl md:text-5xl font-semibold mt-8 md:mt-12 leading-tight max-w-3xl">Produk hukum daerah, mudah dicari dan diunduh</h1>
-            <p class="text-blue-100 mt-3 max-w-2xl text-sm md:text-base leading-relaxed">Telusuri peraturan daerah, peraturan bupati, dan dokumen hukum lainnya. Setiap dokumen tersedia dalam bentuk PDF.</p>
+            <h1 class="font-display text-3xl md:text-5xl font-semibold mt-8 md:mt-12 leading-tight max-w-3xl">Sistem Pengarsipan Surat dan JDIH</h1>
+            <p class="text-blue-100 mt-3 max-w-2xl text-sm md:text-base leading-relaxed">Halaman publik untuk menelusuri peraturan daerah, peraturan bupati, dan dokumen hukum lainnya. Setiap dokumen tersedia dalam bentuk PDF.</p>
 
             <div class="search-hero mt-6 md:mt-8 max-w-4xl mod-jdih">
                 <div class="f-search">
@@ -58,7 +58,7 @@
                         <tr>
                             <th>Jenis</th>
                             <th>Nomor / tahun</th>
-                            <th style="min-width:22rem">Tentang</th>
+                            <th class="u-minw-22">Tentang</th>
                             <th>Penetapan</th>
                             <th>Status</th>
                             <th class="c">Dokumen</th>
@@ -79,14 +79,14 @@
 <!-- ========================================== -->
 <!-- 2. LOGIN                                   -->
 <!-- ========================================== -->
-<div id="login-screen" class="hidden fixed inset-0 z-[100] flex items-end sm:items-center justify-center" style="background:var(--ink)">
-    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(50rem 24rem at 80% -10%,rgba(14,124,134,.5),transparent 60%)"></div>
-    <div class="relative bg-white w-full sm:max-w-sm sm:rounded-2xl rounded-t-2xl p-6 sm:p-8 sm:m-4" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
+<div id="login-screen" class="hidden fixed inset-0 z-[100] flex items-end sm:items-center justify-center u-bg-ink">
+    <div class="absolute inset-0 pointer-events-none login-glow"></div>
+    <div class="relative bg-white w-full sm:max-w-sm sm:rounded-2xl rounded-t-2xl p-6 sm:p-8 sm:m-4 u-safe-pb-6">
         <button onclick="showPublicPortal()" class="btn btn-icon btn-ghost absolute top-3 right-3" aria-label="Kembali ke portal"><i class="fas fa-times"></i></button>
         <div class="flex items-center gap-3 mb-6">
             <span class="brand-mark"><i class="fas fa-envelope-open-text"></i></span>
             <div>
-                <h2 class="font-display text-2xl font-semibold leading-tight" style="color:var(--ink)">Masuk petugas</h2>
+                <h2 class="font-display text-2xl font-semibold leading-tight u-ink">Masuk petugas</h2>
                 <p class="text-sm text-slate-500">Sistem Pengarsipan Surat &amp; Dokumen Hukum</p>
             </div>
         </div>
@@ -99,7 +99,7 @@
                 <label class="label" for="login-pass">Password</label>
                 <input type="password" id="login-pass" class="input" autocomplete="current-password" required>
             </div>
-            <button type="submit" class="btn btn-primary w-full" style="--mod:var(--ink)"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+            <button type="submit" class="btn btn-primary w-full u-mod-ink"><i class="fas fa-sign-in-alt"></i> Masuk</button>
         </form>
     </div>
 </div>
@@ -116,9 +116,9 @@
             <span class="brand-mark"><i class="fas fa-envelope-open-text"></i></span>
             <div class="min-w-0 flex-1">
                 <div class="font-bold text-white leading-tight">Arsip Surat &amp; JDIH</div>
-                <div class="text-xs" style="color:#89a3bd">Arsip surat dan dokumen hukum</div>
+                <div class="text-xs u-side-muted">Arsip surat dan dokumen hukum</div>
             </div>
-            <button onclick="closeDrawer()" class="lg:hidden btn btn-icon" style="background:transparent;color:#c9d8e7" aria-label="Tutup menu"><i class="fas fa-times"></i></button>
+            <button onclick="closeDrawer()" class="lg:hidden btn btn-icon btn-drawer-close" aria-label="Tutup menu"><i class="fas fa-times"></i></button>
         </div>
 
         <nav class="flex-1 overflow-y-auto pb-4">
@@ -137,21 +137,21 @@
             <button class="nav-btn" data-tab="inputPeraturan" onclick="nav('inputPeraturan')"><i class="fas fa-plus"></i> Tambah dokumen hukum</button>
 
             <div id="menu-admin" class="hidden">
-                <div class="nav-group">Administrator</div>
-                <button class="nav-btn" data-tab="pengguna" onclick="nav('pengguna')"><i class="fas fa-users-gear"></i> Kelola pengguna</button>
-                <button class="nav-btn" data-tab="pengaturan" onclick="nav('pengaturan')"><i class="fas fa-print"></i> Pengaturan laporan</button>
+                <div class="nav-group">Pengaturan</div>
+                <button class="nav-btn" data-tab="pengguna" onclick="nav('pengguna')"><i class="fas fa-users-gear"></i> Pengguna &amp; akses</button>
+                <button class="nav-btn" data-tab="pengaturan" onclick="nav('pengaturan')"><i class="fas fa-building-columns"></i> Instansi &amp; kop dokumen</button>
             </div>
         </nav>
 
-        <div class="p-3 border-t" style="border-color:rgba(255,255,255,.1);padding-bottom:calc(.75rem + env(safe-area-inset-bottom,0px))">
+        <div class="p-3 border-t side-foot">
             <div class="flex items-center gap-3 px-2 py-2">
-                <span class="w-9 h-9 rounded-full flex items-center justify-center font-bold" style="background:var(--ink-2);color:#fff" id="user-initial">A</span>
+                <span class="w-9 h-9 rounded-full flex items-center justify-center font-bold avatar-bg" id="user-initial">A</span>
                 <div class="min-w-0 flex-1">
                     <div class="text-sm font-semibold text-white truncate" id="user-nama">Pengguna</div>
-                    <div class="text-xs" style="color:#89a3bd" id="user-role">Staff</div>
+                    <div class="text-xs u-side-muted" id="user-role">Staff</div>
                 </div>
             </div>
-            <button onclick="logout()" class="nav-btn" style="width:100%;margin:.25rem 0 0;color:#ffb4ac"><i class="fas fa-right-from-bracket" style="color:#ffb4ac"></i> Keluar</button>
+            <button onclick="logout()" class="nav-btn nav-btn-logout"><i class="fas fa-right-from-bracket u-danger-soft"></i> Keluar</button>
         </div>
     </aside>
 
@@ -159,7 +159,7 @@
         <header class="topbar">
             <div class="topbar-in">
                 <button onclick="openDrawer()" class="lg:hidden btn btn-icon btn-ghost" aria-label="Buka menu"><i class="fas fa-bars"></i></button>
-                <h2 id="page-title" class="font-display text-xl font-semibold flex-1 truncate" style="color:var(--ink)">Beranda</h2>
+                <h2 id="page-title" class="font-display text-xl font-semibold flex-1 truncate u-ink">Beranda</h2>
                 <span class="hidden lg:flex items-center gap-2 text-sm text-slate-500"><i class="far fa-calendar"></i> <span id="today-label"></span></span>
             </div>
         </header>
@@ -168,7 +168,7 @@
 
             <!-- ============ BERANDA ============ -->
             <section id="tab-dashboard" class="tab-content">
-                <h3 class="font-display text-2xl md:text-3xl font-semibold" style="color:var(--ink)">Selamat datang, <span id="dash-nama"></span></h3>
+                <h3 class="font-display text-2xl md:text-3xl font-semibold u-ink">Selamat datang, <span id="dash-nama"></span></h3>
                 <p class="text-slate-500 text-sm mt-1">Ringkasan arsip surat dan dokumen hukum.</p>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
@@ -194,11 +194,11 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
                     <div class="panel">
-                        <div class="panel-head flex items-center justify-between"><h4 class="font-bold" style="color:var(--ink)">Surat masuk terbaru</h4><button class="text-sm font-semibold" style="color:var(--laut)" onclick="nav('daftarMasuk')">Lihat semua</button></div>
+                        <div class="panel-head flex items-center justify-between"><h4 class="font-bold u-ink">Surat masuk terbaru</h4><button class="text-sm font-semibold u-laut" onclick="nav('daftarMasuk')">Lihat semua</button></div>
                         <div class="px-4 md:px-5" id="recent-masuk"></div>
                     </div>
                     <div class="panel">
-                        <div class="panel-head flex items-center justify-between"><h4 class="font-bold" style="color:var(--ink)">Surat keluar terbaru</h4><button class="text-sm font-semibold" style="color:var(--tirta)" onclick="nav('daftarKeluar')">Lihat semua</button></div>
+                        <div class="panel-head flex items-center justify-between"><h4 class="font-bold u-ink">Surat keluar terbaru</h4><button class="text-sm font-semibold u-tirta" onclick="nav('daftarKeluar')">Lihat semua</button></div>
                         <div class="px-4 md:px-5" id="recent-keluar"></div>
                     </div>
                 </div>
@@ -208,7 +208,7 @@
             <section id="tab-suratMasuk" class="tab-content hidden max-w-3xl mod-masuk">
                 <div class="panel mod-bar">
                     <div class="panel-head">
-                        <h3 class="font-display text-xl font-semibold" style="color:var(--ink)" id="sm-title">Catat surat masuk</h3>
+                        <h3 class="font-display text-xl font-semibold u-ink" id="sm-title">Catat surat masuk</h3>
                         <p class="text-sm text-slate-500 mt-1" id="sm-sub">Nomor agenda dibuat otomatis saat disimpan.</p>
                     </div>
                     <form id="formMasuk" class="panel-body" onsubmit="event.preventDefault(); submitSuratMasuk();" novalidate>
@@ -291,7 +291,7 @@
             <section id="tab-suratKeluar" class="tab-content hidden max-w-3xl mod-keluar">
                 <div class="panel mod-bar">
                     <div class="panel-head">
-                        <h3 class="font-display text-xl font-semibold" style="color:var(--ink)" id="sk-title">Catat surat keluar</h3>
+                        <h3 class="font-display text-xl font-semibold u-ink" id="sk-title">Catat surat keluar</h3>
                         <p class="text-sm text-slate-500 mt-1" id="sk-sub">Nomor urut dibuat otomatis saat disimpan.</p>
                     </div>
                     <form id="formKeluar" class="panel-body" onsubmit="event.preventDefault(); submitSuratKeluar();" novalidate>
@@ -368,7 +368,7 @@
             <section id="tab-daftarMasuk" class="tab-content hidden mod-masuk">
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4">
                     <div>
-                        <h3 class="font-display text-2xl font-semibold" style="color:var(--ink)">Daftar surat masuk</h3>
+                        <h3 class="font-display text-2xl font-semibold u-ink">Daftar surat masuk</h3>
                         <p class="text-sm text-slate-500">Difilter menurut tanggal diterima.</p>
                     </div>
                     <div class="flex gap-2">
@@ -378,7 +378,7 @@
                 </div>
 
                 <div class="panel">
-                    <div class="panel-body" style="padding-bottom:1rem">
+                    <div class="panel-body u-pb-1">
                         <div class="filterbar">
                             <select id="f-masuk-bulan" class="input" onchange="applyFilter('masuk')" aria-label="Bulan"></select>
                             <select id="f-masuk-tahun" class="input" onchange="applyFilter('masuk')" aria-label="Tahun"></select>
@@ -391,17 +391,17 @@
                         </div>
                         <p class="result-line mt-3" id="count-masuk" aria-live="polite"></p>
                     </div>
-                    <div class="only-desktop table-scroll" style="border-top:1px solid var(--line)">
+                    <div class="only-desktop table-scroll u-border-top">
                         <table class="tbl">
                             <thead>
                                 <tr>
-                                    <th>No. agenda</th><th>Diterima</th><th>Surat</th><th style="min-width:18rem">Asal dan perihal</th><th>Disposisi</th><th class="c">Arsip</th><th class="c">Aksi</th>
+                                    <th>No. agenda</th><th>Diterima</th><th>Surat</th><th class="u-minw-18">Asal dan perihal</th><th>Disposisi</th><th class="c">Arsip</th><th class="c">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-masuk"></tbody>
                         </table>
                     </div>
-                    <div class="only-mobile" id="cards-masuk" style="border-top:1px solid var(--line)"></div>
+                    <div class="only-mobile u-border-top" id="cards-masuk"></div>
                 </div>
             </section>
 
@@ -409,7 +409,7 @@
             <section id="tab-daftarKeluar" class="tab-content hidden mod-keluar">
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4">
                     <div>
-                        <h3 class="font-display text-2xl font-semibold" style="color:var(--ink)">Daftar surat keluar</h3>
+                        <h3 class="font-display text-2xl font-semibold u-ink">Daftar surat keluar</h3>
                         <p class="text-sm text-slate-500">Difilter menurut tanggal surat.</p>
                     </div>
                     <div class="flex gap-2">
@@ -419,7 +419,7 @@
                 </div>
 
                 <div class="panel">
-                    <div class="panel-body" style="padding-bottom:1rem">
+                    <div class="panel-body u-pb-1">
                         <div class="filterbar">
                             <select id="f-keluar-bulan" class="input" onchange="applyFilter('keluar')" aria-label="Bulan"></select>
                             <select id="f-keluar-tahun" class="input" onchange="applyFilter('keluar')" aria-label="Tahun"></select>
@@ -432,17 +432,17 @@
                         </div>
                         <p class="result-line mt-3" id="count-keluar" aria-live="polite"></p>
                     </div>
-                    <div class="only-desktop table-scroll" style="border-top:1px solid var(--line)">
+                    <div class="only-desktop table-scroll u-border-top">
                         <table class="tbl">
                             <thead>
                                 <tr>
-                                    <th>Tgl surat</th><th>Nomor surat</th><th>Tujuan</th><th style="min-width:18rem">Perihal</th><th>Penandatangan</th><th class="c">Arsip</th><th class="c">Aksi</th>
+                                    <th>Tgl surat</th><th>Nomor surat</th><th>Tujuan</th><th class="u-minw-18">Perihal</th><th>Penandatangan</th><th class="c">Arsip</th><th class="c">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-keluar"></tbody>
                         </table>
                     </div>
-                    <div class="only-mobile" id="cards-keluar" style="border-top:1px solid var(--line)"></div>
+                    <div class="only-mobile u-border-top" id="cards-keluar"></div>
                 </div>
             </section>
 
@@ -450,7 +450,7 @@
             <section id="tab-inputPeraturan" class="tab-content hidden max-w-3xl mod-jdih">
                 <div class="panel mod-bar">
                     <div class="panel-head">
-                        <h3 class="font-display text-xl font-semibold" style="color:var(--ink)" id="prt-title">Tambah dokumen hukum</h3>
+                        <h3 class="font-display text-xl font-semibold u-ink" id="prt-title">Tambah dokumen hukum</h3>
                         <p class="text-sm text-slate-500 mt-1" id="prt-sub">Dokumen yang disimpan di sini langsung tampil di portal publik JDIH.</p>
                     </div>
                     <form id="formPeraturan" class="panel-body" onsubmit="event.preventDefault(); submitPeraturan();" novalidate>
@@ -532,7 +532,7 @@
                         </div>
 
                         <div class="fgroup">
-                            <div class="fhead"><i class="fas fa-file-pdf"></i> Dokumen PDF<span class="req" style="color:var(--danger)">*</span></div>
+                            <div class="fhead"><i class="fas fa-file-pdf"></i> Dokumen PDF<span class="req u-danger">*</span></div>
                             <div class="upload" data-id="prt" data-jenis="Peraturan" data-pdfonly="1"></div>
                             <details class="link-manual mt-3">
                                 <summary>Atau tempel link PDF yang sudah ada</summary>
@@ -552,7 +552,7 @@
             <section id="tab-daftarPeraturan" class="tab-content hidden mod-jdih">
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4">
                     <div>
-                        <h3 class="font-display text-2xl font-semibold" style="color:var(--ink)">Daftar dokumen hukum</h3>
+                        <h3 class="font-display text-2xl font-semibold u-ink">Daftar dokumen hukum</h3>
                         <p class="text-sm text-slate-500">Dokumen yang tampil di portal publik JDIH.</p>
                     </div>
                     <div class="flex gap-2">
@@ -562,8 +562,8 @@
                 </div>
 
                 <div class="panel">
-                    <div class="panel-body" style="padding-bottom:1rem">
-                        <div class="filterbar" style="grid-template-columns:1fr 1fr">
+                    <div class="panel-body u-pb-1">
+                        <div class="filterbar u-cols-2">
                             <select id="f-prt-jenis" class="input" onchange="applyFilter('peraturan')" aria-label="Jenis"></select>
                             <select id="f-prt-tahun" class="input" onchange="applyFilter('peraturan')" aria-label="Tahun"></select>
                             <div class="f-search">
@@ -573,17 +573,17 @@
                         </div>
                         <p class="result-line mt-3" id="count-prt" aria-live="polite"></p>
                     </div>
-                    <div class="only-desktop table-scroll" style="border-top:1px solid var(--line)">
+                    <div class="only-desktop table-scroll u-border-top">
                         <table class="tbl">
                             <thead>
                                 <tr>
-                                    <th>Jenis</th><th>Nomor / tahun</th><th style="min-width:20rem">Tentang</th><th>Penetapan</th><th>Status</th><th class="c">PDF</th><th class="c">Aksi</th>
+                                    <th>Jenis</th><th>Nomor / tahun</th><th class="u-minw-20">Tentang</th><th>Penetapan</th><th>Status</th><th class="c">PDF</th><th class="c">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-peraturan"></tbody>
                         </table>
                     </div>
-                    <div class="only-mobile" id="cards-peraturan" style="border-top:1px solid var(--line)"></div>
+                    <div class="only-mobile u-border-top" id="cards-peraturan"></div>
                 </div>
             </section>
 
@@ -591,8 +591,8 @@
             <section id="tab-pengguna" class="tab-content hidden max-w-3xl mod-admin">
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4">
                     <div>
-                        <h3 class="font-display text-2xl font-semibold" style="color:var(--ink)">Kelola pengguna</h3>
-                        <p class="text-sm text-slate-500">Akun yang bisa masuk ke sistem ini.</p>
+                        <h3 class="font-display text-2xl font-semibold u-ink">Pengguna &amp; akses</h3>
+                        <p class="text-sm text-slate-500">Akun yang bisa masuk ke sistem. <strong>Staff</strong> mencatat surat dan dokumen hukum; <strong>Admin</strong> juga mengelola pengguna dan pengaturan.</p>
                     </div>
                     <button onclick="openModalTambahUser()" class="btn btn-primary"><i class="fas fa-user-plus"></i> Tambah pengguna</button>
                 </div>
@@ -603,29 +603,42 @@
             <section id="tab-pengaturan" class="tab-content hidden max-w-3xl mod-admin">
                 <div class="panel">
                     <div class="panel-head">
-                        <h3 class="font-display text-xl font-semibold" style="color:var(--ink)">Pengaturan laporan cetak</h3>
-                        <p class="text-sm text-slate-500 mt-1">Data ini dipakai pada kop dan tanda tangan di laporan surat masuk, surat keluar, dan JDIH.</p>
+                        <h3 class="font-display text-xl font-semibold u-ink">Instansi &amp; kop dokumen</h3>
+                        <p class="text-sm text-slate-500 mt-1">Identitas ini dipakai pada kop dan tanda tangan di laporan cetak (surat masuk, surat keluar, JDIH). Nama instansi kerja juga tampil sebagai judul kecil di header halaman publik.</p>
                     </div>
                     <form id="formPengaturan" class="panel-body" onsubmit="event.preventDefault(); submitPengaturan();">
                         <div class="fgroup">
-                            <div class="fhead"><i class="fas fa-building-columns"></i> Kop laporan</div>
+                            <div class="fhead"><i class="fas fa-building-columns"></i> Identitas instansi (kop dokumen)</div>
                             <div class="space-y-4">
                                 <div>
-                                    <label class="label" for="set-instansi">Nama instansi</label>
-                                    <input type="text" id="set-instansi" class="input" placeholder="PEMERINTAH KABUPATEN PULAU TALIABU">
+                                    <label class="label" for="set-instansi">Instansi induk</label>
+                                    <input type="text" id="set-instansi" class="input" placeholder="mis. PEMERINTAH KABUPATEN PULAU TALIABU" autocomplete="off" oninput="renderKopPreview()">
+                                    <p class="hint">Baris pertama kop.</p>
                                 </div>
                                 <div>
-                                    <label class="label" for="set-unit">Nama unit kerja</label>
-                                    <input type="text" id="set-unit" class="input" placeholder="mis. SEKRETARIAT DAERAH">
+                                    <label class="label" for="set-unit">Instansi kerja (dinas / kantor)</label>
+                                    <input type="text" id="set-unit" class="input" placeholder="mis. BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH" autocomplete="off" oninput="renderKopPreview()">
+                                    <p class="hint">Baris kedua kop, di bawah instansi induk. Juga dipakai sebagai judul kecil di header halaman publik.</p>
                                 </div>
                                 <div>
-                                    <label class="label" for="set-alamat">Alamat kantor</label>
-                                    <input type="text" id="set-alamat" class="input" placeholder="Jalan, kelurahan, kecamatan, kode pos">
+                                    <label class="label" for="set-alamat">Alamat</label>
+                                    <input type="text" id="set-alamat" class="input" placeholder="Jalan, kelurahan, kecamatan, kode pos" autocomplete="off" oninput="renderKopPreview()">
                                 </div>
                                 <div>
-                                    <label class="label" for="set-logo">Alamat gambar logo</label>
-                                    <input type="url" id="set-logo" class="input" placeholder="https://... (boleh kosong)" inputmode="url">
-                                    <p class="hint">Tempel link gambar logo (JPG/PNG) yang bisa dibuka publik. Jika kosong, kop dicetak tanpa logo.</p>
+                                    <span class="label">Logo</span>
+                                    <div class="logo-row">
+                                        <div class="logo-box" id="logo-box" aria-live="polite"><i class="far fa-image"></i></div>
+                                        <div class="logo-actions">
+                                            <input type="file" id="set-logo-file" class="hidden" accept="image/png,image/jpeg,image/webp" onchange="pilihLogo(this)">
+                                            <button type="button" class="btn btn-soft btn-sm" onclick="document.getElementById('set-logo-file').click()"><i class="fas fa-upload"></i> Pilih logo</button>
+                                            <button type="button" class="btn btn-ghost btn-sm" id="btn-hapus-logo" onclick="hapusLogo()"><i class="fas fa-trash"></i> Hapus logo</button>
+                                        </div>
+                                    </div>
+                                    <p class="hint">JPG, PNG, atau WebP. Gambar dikecilkan otomatis. Paling cocok gambar persegi dengan latar putih atau transparan. Jika kosong, kop dicetak tanpa logo.</p>
+                                </div>
+                                <div>
+                                    <span class="label">Pratinjau kop</span>
+                                    <div class="kop-prev" id="kop-prev"></div>
                                 </div>
                             </div>
                         </div>
@@ -651,7 +664,7 @@
                             </div>
                         </div>
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary" style="--mod:var(--ink)"><i class="fas fa-floppy-disk"></i> Simpan pengaturan</button>
+                            <button type="submit" class="btn btn-primary u-mod-ink"><i class="fas fa-floppy-disk"></i> Simpan pengaturan</button>
                         </div>
                     </form>
                 </div>
@@ -676,9 +689,9 @@
 
 <!-- Tambah pengguna -->
 <div id="modal-tambah-user" class="hidden fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/50 sm:p-4 mod-admin">
-    <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5 max-h-[92vh] overflow-y-auto" style="padding-bottom:calc(1.25rem + env(safe-area-inset-bottom,0px))">
+    <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5 max-h-[92vh] overflow-y-auto u-safe-pb-5">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="font-display text-xl font-semibold" style="color:var(--ink)">Tambah pengguna</h3>
+            <h3 class="font-display text-xl font-semibold u-ink">Tambah pengguna</h3>
             <button onclick="closeModalUser()" class="btn btn-icon btn-ghost" aria-label="Tutup"><i class="fas fa-times"></i></button>
         </div>
         <form id="formTambahUser" onsubmit="event.preventDefault(); submitTambahUser();" class="space-y-4">
@@ -692,7 +705,7 @@
                 </select>
             </div>
             <div><label class="label" for="add-password">Password awal</label><input type="password" id="add-password" class="input" required minlength="5"><p class="hint">Minimal 5 karakter.</p></div>
-            <div class="form-actions" style="margin-top:1rem;padding-top:1rem">
+            <div class="form-actions form-actions-spaced">
                 <button type="button" onclick="closeModalUser()" class="btn btn-ghost">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan akun</button>
             </div>
@@ -702,16 +715,16 @@
 
 <!-- Ubah password -->
 <div id="modal-ubah-password" class="hidden fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/50 sm:p-4 mod-admin">
-    <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5" style="padding-bottom:calc(1.25rem + env(safe-area-inset-bottom,0px))">
+    <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5 u-safe-pb-5">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="font-display text-xl font-semibold" style="color:var(--ink)">Ubah password</h3>
+            <h3 class="font-display text-xl font-semibold u-ink">Ubah password</h3>
             <button onclick="closeModalPassword()" class="btn btn-icon btn-ghost" aria-label="Tutup"><i class="fas fa-times"></i></button>
         </div>
         <form id="formUbahPassword" onsubmit="event.preventDefault(); submitUbahPassword();" class="space-y-4">
             <input type="hidden" id="pass-username">
             <p class="text-sm text-slate-600">Akun: <strong id="pass-username-display"></strong></p>
             <div><label class="label" for="pass-new">Password baru</label><input type="text" id="pass-new" class="input" autocomplete="off" required minlength="5"><p class="hint">Minimal 5 karakter.</p></div>
-            <div class="form-actions" style="margin-top:1rem;padding-top:1rem">
+            <div class="form-actions form-actions-spaced">
                 <button type="button" onclick="closeModalPassword()" class="btn btn-ghost">Batal</button>
                 <button type="submit" class="btn btn-primary"><i class="fas fa-key"></i> Perbarui password</button>
             </div>
@@ -723,7 +736,7 @@
 <div id="preview-overlay" class="hidden preview" role="dialog" aria-modal="true" aria-label="Pratinjau laporan">
     <div class="preview-bar">
         <span class="ttl" id="preview-title">Pratinjau laporan</span>
-        <button class="btn btn-sm" style="background:var(--brass);color:var(--ink)" onclick="printPreview()"><i class="fas fa-print"></i> Cetak / simpan PDF</button>
+        <button class="btn btn-sm btn-brass" onclick="printPreview()"><i class="fas fa-print"></i> Cetak / simpan PDF</button>
         <button class="btn btn-sm btn-ghost" onclick="openPreviewTab()"><i class="fas fa-up-right-from-square"></i> Buka di tab baru</button>
         <button class="btn btn-sm btn-ghost" onclick="closePreview()" aria-label="Tutup pratinjau"><i class="fas fa-times"></i> Tutup</button>
     </div>
@@ -731,7 +744,7 @@
 </div>
 
 <!-- Loading global -->
-<div id="loading-overlay" class="hidden fixed inset-0 z-[200] flex justify-center items-center p-4" style="background:rgba(8,20,33,.65)">
+<div id="loading-overlay" class="hidden fixed inset-0 z-[200] flex justify-center items-center p-4 u-overlay-65">
     <div class="bg-white p-6 rounded-xl shadow-2xl flex flex-col items-center">
         <div class="loader mb-4"></div>
         <p class="font-semibold text-slate-800" id="loading-text">Memproses...</p>
@@ -739,7 +752,7 @@
 </div>
 
 <!-- Progres upload -->
-<div id="upload-overlay" class="hidden fixed inset-0 z-[210] flex justify-center items-center p-4" style="background:rgba(8,20,33,.7)">
+<div id="upload-overlay" class="hidden fixed inset-0 z-[210] flex justify-center items-center p-4 u-overlay-70">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 text-center">
         <div id="upload-icon" class="mx-auto mb-3 w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center">
             <i id="upload-icon-i" class="fas fa-cloud-arrow-up text-3xl text-blue-600 upload-bounce"></i>
@@ -764,7 +777,7 @@
 </div>
 
 <!-- Dialog kustom (pengganti alert/confirm) -->
-<div id="dlg-overlay" class="hidden fixed inset-0 z-[300] flex justify-center items-center p-4" style="background:rgba(8,20,33,.6)" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+<div id="dlg-overlay" class="hidden fixed inset-0 z-[300] flex justify-center items-center p-4 u-overlay-60" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
     <div id="dlg-box" class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
         <div id="dlg-bar" class="h-1.5 bg-blue-500"></div>
         <div class="p-6 text-center">
@@ -784,6 +797,15 @@
 <div class="toast-wrap" id="toast-wrap" aria-live="polite"></div>
 
 <script src="config.js"></script>
-<script src="app.js"></script>
+<script src="js/core.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/upload.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/list.js"></script>
+<script src="js/forms.js"></script>
+<script src="js/public.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/report.js"></script>
 </body>
 </html>
